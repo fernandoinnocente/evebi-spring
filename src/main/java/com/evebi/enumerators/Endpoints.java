@@ -2,7 +2,7 @@ package com.evebi.enumerators;
 
 public enum Endpoints {
 	
-	EVE_SERVER("https://esi.evetech.net");
+	EVE_SERVER("esi.evetech.net");
 
     private String url;
 
