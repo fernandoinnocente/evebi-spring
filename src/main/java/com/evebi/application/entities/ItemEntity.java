@@ -1,5 +1,6 @@
 package com.evebi.application.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,9 @@ public class ItemEntity {
 
 	@Column(name = "marketGroupID")
 	private String marketGroup;
+	
+	@Column(name = "portionSize")
+	private long reprocessSize;
 
 	@Transient
 	@JsonIgnore()
@@ -47,45 +51,53 @@ public class ItemEntity {
 
 	@Transient
 	@JsonInclude()
-	private double jitaBuyPrice;
+	private BigDecimal jitaBuyPrice;
 
 	@Transient
 	@JsonInclude()
-	private double jitaSellPrice;
+	private BigDecimal jitaSellPrice;
 
 	@Transient
 	@JsonInclude()
-	private double reprocessPrice;
-	
+	private BigDecimal reprocessPrice;
+
+	@Transient
+	@JsonInclude()
+	private boolean isReprocessProfitable;
+
+	@Transient
+	@JsonInclude()
+	private BigDecimal reprocessProfitability;
+
 	@PostLoad
 	private void postLoad() {
 		reprocessedEntitys = new ArrayList<>();
-		for(ItemReprocessMaterial material : reprocessedMaterials) {
+		for (ItemReprocessMaterial material : reprocessedMaterials) {
 			reprocessedEntitys.add(material.getMaterial());
 		}
 	}
 
-	public double getJitaSellPrice() {
+	public BigDecimal getJitaSellPrice() {
 		return jitaSellPrice;
 	}
 
-	public void setJitaSellPrice(double jitaSellPrice) {
+	public void setJitaSellPrice(BigDecimal jitaSellPrice) {
 		this.jitaSellPrice = jitaSellPrice;
 	}
 
-	public double getReprocessPrice() {
+	public BigDecimal getReprocessPrice() {
 		return reprocessPrice;
 	}
 
-	public void setReprocessPrice(double reprocessPrice) {
+	public void setReprocessPrice(BigDecimal reprocessPrice) {
 		this.reprocessPrice = reprocessPrice;
 	}
 
-	public double getJitaBuyPrice() {
+	public BigDecimal getJitaBuyPrice() {
 		return jitaBuyPrice;
 	}
 
-	public void setJitaBuyPrice(double jitaBuyPrice) {
+	public void setJitaBuyPrice(BigDecimal jitaBuyPrice) {
 		this.jitaBuyPrice = jitaBuyPrice;
 	}
 
@@ -136,5 +148,31 @@ public class ItemEntity {
 	public void setReprocessedEntitys(List<ItemEntity> reprocessedEntitys) {
 		this.reprocessedEntitys = reprocessedEntitys;
 	}
+
+	public boolean isReprocessProfitable() {
+		return isReprocessProfitable;
+	}
+
+	public void setReprocessProfitable(boolean isReprocessProfitable) {
+		this.isReprocessProfitable = isReprocessProfitable;
+	}
+
+	public BigDecimal getReprocessProfitability() {
+		return reprocessProfitability;
+	}
+
+	public void setReprocessProfitability(BigDecimal reprocessProfitability) {
+		this.reprocessProfitability = reprocessProfitability;
+	}
+
+	public long getReprocessSize() {
+		return reprocessSize;
+	}
+
+	public void setReprocessSize(long reprocessSize) {
+		this.reprocessSize = reprocessSize;
+	}
+	
+	
 
 }

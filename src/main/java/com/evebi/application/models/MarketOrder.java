@@ -1,5 +1,6 @@
 package com.evebi.application.models;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,7 +23,7 @@ public class MarketOrder {
 	@JsonProperty("order_id")
 	private long orderID;
 	
-	private double price;
+	private BigDecimal price;
 	
 	private String range;
 	
@@ -86,11 +87,11 @@ public class MarketOrder {
 		this.orderID = orderID;
 	}
 
-	public double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 

@@ -3,6 +3,7 @@ package com.evebi.application.controllers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,21 +23,23 @@ public class MarketOrderController {
 	@RequestMapping(value ="/search-profit")
 	public ResponseEntity<List<MarketOrder>> searchProfit(
 			@RequestParam("product") String productID,
-			@RequestParam("region") String region) {
+			@RequestParam("region") String region) throws InterruptedException, ExecutionException {
 		Map<String,String> params = new HashMap<>();
 		params.put("product_id", productID);
 		params.put("region_id", region);
-		return ResponseEntity.ok(service.getBuyOrders(productID, region));
+		return ResponseEntity.ok(service.getBuyOrders(productID, region).get());
 	}
 	
-	@RequestMapping(value ="/test")
+	@RequestMapping(value ="/market/test")
 	public ResponseEntity<List<MarketOrder>> test(
 			@RequestParam("product") String productID,
-			@RequestParam("region") String region) {
+			@RequestParam("region") String region) throws InterruptedException, ExecutionException {
 		Map<String,String> params = new HashMap<>();
 		params.put("product_id", productID);
 		params.put("region_id", region);
-		return ResponseEntity.ok(service.getBuyOrders(productID, region));
+		List<MarketOrder> orders = service.getBuyOrders(productID, region).get();
+		service.sortByHighestPrice(orders);
+		return ResponseEntity.ok(orders);
 	}
 
 }

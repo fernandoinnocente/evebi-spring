@@ -10,4 +10,6 @@ import com.evebi.application.entities.ItemEntity;
 @Repository
 public interface ItemRepository extends JpaRepository<ItemEntity, Long> {
 	public List<ItemEntity> findByMarketGroupNotNull();
+	
+	public ItemEntity findById(long id);
 }

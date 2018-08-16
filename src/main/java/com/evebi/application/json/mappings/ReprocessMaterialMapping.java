@@ -15,7 +15,8 @@ public class ReprocessMaterialMapping
 		for (ItemReprocessMaterial item : items) {
 			ReprocessMaterialListJSON json = new ReprocessMaterialListJSON(
 					item.getMaterial().getName(),
-					item.getQuantity());
+					item.getQuantity(),
+					item.getMaterial().getJitaBuyPrice());
 			list.add(json);
 		}
 		return list;
