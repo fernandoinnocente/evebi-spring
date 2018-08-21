@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.evebi.application.json.mappings.ReprocessMaterialMapping;
+import com.evebi.application.models.MarketOrder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -68,6 +69,20 @@ public class ItemEntity {
 	@Transient
 	@JsonInclude()
 	private BigDecimal reprocessProfitability;
+	
+	@Transient
+	@JsonInclude()
+	private long itensBelowReprocessPrice;
+	
+	@Transient
+	@JsonIgnore()
+	private List<MarketOrder> jitaBuyOrders;
+	
+	@Transient
+	@JsonIgnore()
+	private List<MarketOrder> jitaSellOrders;
+	
+
 
 	@PostLoad
 	private void postLoad() {
@@ -172,7 +187,29 @@ public class ItemEntity {
 	public void setReprocessSize(long reprocessSize) {
 		this.reprocessSize = reprocessSize;
 	}
-	
-	
+
+	public List<MarketOrder> getJitaBuyOrders() {
+		return jitaBuyOrders;
+	}
+
+	public void setJitaBuyOrders(List<MarketOrder> jitaBuyOrders) {
+		this.jitaBuyOrders = jitaBuyOrders;
+	}
+
+	public List<MarketOrder> getJitaSellOrders() {
+		return jitaSellOrders;
+	}
+
+	public void setJitaSellOrders(List<MarketOrder> jitaSellOrders) {
+		this.jitaSellOrders = jitaSellOrders;
+	}
+
+	public long getItensBelowReprocessPrice() {
+		return itensBelowReprocessPrice;
+	}
+
+	public void setItensBelowReprocessPrice(long itensBelowReprocessPrice) {
+		this.itensBelowReprocessPrice = itensBelowReprocessPrice;
+	}
 
 }

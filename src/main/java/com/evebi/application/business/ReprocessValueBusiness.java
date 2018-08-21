@@ -20,6 +20,10 @@ public class ReprocessValueBusiness {
 
 	@Autowired
 	private ItemRepository repository;
+	
+	private final BigDecimal zero = new BigDecimal(0);
+	
+	final int MAX_PAGES = 1;
 
 	private BigDecimal calculateReprocessValue(ItemEntity item) {
 		BigDecimal sum = new BigDecimal(0);
@@ -35,16 +39,15 @@ public class ReprocessValueBusiness {
 	}
 
 	private ItemEntity updateReprocessInformations(ItemEntity item, BigDecimal price ) {
-		System.out.println("Atualizando informações de lucratividade do item " + item.getId());
 		item.setReprocessPrice(calculateReprocessValue(item));
 
-		if (price.compareTo(new BigDecimal(0)) > 0) {
+		if (zero.compareTo(price) < 0) {
 			item.setReprocessProfitability(item.getReprocessPrice().subtract(price));
 		} else {
-			item.setReprocessProfitability(new BigDecimal(0));
+			item.setReprocessProfitability(zero);
 		}
 
-		item.setReprocessProfitable(item.getReprocessProfitability().compareTo(new BigDecimal(0)) > 0);
+		item.setReprocessProfitable(zero.compareTo(item.getReprocessProfitability()) < 0);
 		return item;
 	}
 
@@ -57,11 +60,13 @@ public class ReprocessValueBusiness {
 		return item;
 	}
 
-	public List<ItemEntity> getReprocessableItems(int start, int last) {
+	public List<ItemEntity> getReprocessableItems(int page) {
 		List<ItemEntity> items = filterReprocessableItems(repository.findByMarketGroupNotNull());
-		items = items.subList(start, last);
+		int pageSize = items.size()/ MAX_PAGES;
+		items = items.subList(pageSize * (page - 1), pageSize * page);
 		items = jitaBusiness.getUpdatedJitaPrices(items);
 
+		System.out.println("Atualizando informações de reprocessamento");
 		for (int i = 0; i < items.size(); i++) {
 			ItemEntity item = items.get(i);
 			updateReprocessInformations(item, item.getJitaBuyPrice());
@@ -70,13 +75,17 @@ public class ReprocessValueBusiness {
 		return items.stream().filter(i -> i.isReprocessProfitable()).collect(Collectors.toList());
 	}
 
-	public List<ItemEntity> getInstantReprocessableItems(int start, int last) {
+	public List<ItemEntity> getInstantReprocessableItems(int page) {
 		List<ItemEntity> items = filterReprocessableItems(repository.findByMarketGroupNotNull());
-		items = items.subList(start, last);
+		int pageSize = items.size()/MAX_PAGES;
+		items = items.subList(pageSize * (page - 1), pageSize * page);
 		items = jitaBusiness.getUpdatedJitaPrices(items);
+		System.out.println("Atualizando informações de reprocessamento");
 		for (int i = 0; i < items.size(); i++) {
 			ItemEntity item = items.get(i);
 			updateReprocessInformations(item, item.getJitaSellPrice());
+			long itemsBelowPrice = item.getJitaSellOrders().stream().filter(o -> o.getPrice().compareTo(item.getReprocessPrice()) <= 0).mapToLong(o -> o.getRemainVolume()).sum();
+			item.setItensBelowReprocessPrice(itemsBelowPrice);
 		}
 
 		return items.stream().filter(i -> i.isReprocessProfitable()).collect(Collectors.toList());

@@ -20,12 +20,14 @@ public class EVESwaggerService {
 	@Async
 	public CompletableFuture<String> get(String route, Map<String, String> params,
 			MultiValueMap<String, String> queryParams) {
+		
 		CompletableFuture<String> response = new CompletableFuture<>();
 
 		CompletableFuture.runAsync(() -> {
 			RestTemplate restTemplate = new RestTemplate();
 			String url = Endpoints.EVE_SERVER.url() + route;
-			UriComponents uriComponents = UriComponentsBuilder.newInstance().scheme("https").host(url)
+			UriComponents uriComponents = UriComponentsBuilder.newInstance().scheme("https")
+					.host(url)
 					.queryParams(queryParams).buildAndExpand(params);
 
 			response.complete(restTemplate.getForObject(uriComponents.toUriString(), String.class));

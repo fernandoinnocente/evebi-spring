@@ -1,5 +1,6 @@
 package com.evebi.application.services;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -76,14 +78,12 @@ public class MarketOperationsService {
 
 	private List<MarketOrder> getOrders(Map<String, String> params, MultiValueMap<String, String> queryParams) {
 		List<MarketOrder> orders = null;
-		System.out.println("Requisitando preços do tipo " + queryParams.get("order_type") + " para item " + queryParams.get("type_id"));
 		try {
-			String response = service.get(Routes.GET_MARKET_ORDERS.route(), params, queryParams).get();
+			String response = service.get(Routes.GET_MARKET_ORDERS.route(), params, queryParams).get(10,
+					TimeUnit.SECONDS);
 			orders = Arrays.asList(objectMapper.readValue(response, MarketOrder[].class));
-			System.out.println("Ordens Resolvidas:");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			orders = new ArrayList<>();
 		}
 		return orders;
 	}

@@ -32,6 +32,7 @@ public class JitaPriceBusiness {
 		try {
 			List<MarketOrder> orders = service.getBuyOrders(String.valueOf(item.getId()), "10000002").get();
 			List<MarketOrder> jitaOrders = service.sortByHighestPrice(filterJitaOrders(orders));
+			item.setJitaBuyOrders(jitaOrders);
 			BigDecimal price = new BigDecimal(0);
 			if (jitaOrders.size() > 0) {
 				price = jitaOrders.get(0).getPrice();
@@ -49,6 +50,7 @@ public class JitaPriceBusiness {
 			Future<List<MarketOrder>> orders = service.getSellOrders(String.valueOf(item.getId()), "10000002");
 			List<MarketOrder> jitaOrders = filterJitaOrders(orders.get());
 			jitaOrders = service.sortByLowestPrice(jitaOrders);
+			item.setJitaSellOrders(jitaOrders);
 			BigDecimal price = new BigDecimal(0);
 			if (jitaOrders.size() > 0) {
 				price = jitaOrders.get(0).getPrice();
