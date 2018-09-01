@@ -44,7 +44,7 @@ public class ItensToReprocessController {
 
 		System.out.println("Request recebida: instant...");
 		long time = System.currentTimeMillis();
-		List<ItemEntity> reprocessableItems = business.getInstantReprocessableItems(page);
+		List<ItemEntity> reprocessableItems = business.getInstantReprocessableItems();
 		System.out.println("Conclusão após " + (System.currentTimeMillis() - time));
 		return ResponseEntity.ok(new ItemPriceMapping().convert(reprocessableItems));
 	}
